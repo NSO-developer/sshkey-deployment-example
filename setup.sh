@@ -88,7 +88,7 @@ docker exec --user root $NSO_NAME sh -c "mkdir $NSOAPP_NAME; chown nso:nso $NSOA
 docker exec $NSO_NAME sh -c "tar xfz $NSOAPP_NAME.tar.gz"
 docker exec --user root $NSO_NAME /$NSOAPP_NAME/run.sh
 
-printf "\n${GREEN}##### Follow the NODE-EX0 NODE-EX1 NODE-EX2 NODE-NSO logs\n${NC}"
+printf "\n${GREEN}##### Follow the NODE-NSO logs\n${NC}"
 printf "${RED}##### Press any key to continue or ctrl-c to exit\n${NC}"
 read -n 1 -s -r
 docker compose logs --follow NODE-NSO
