@@ -85,7 +85,7 @@ Running the Example
 First, either add the NSO installer binary into the directory of this `README`
 file or load the NSO container image into the Docker image repository:
 
-      cp /path/to/nso-${NSO_VERSION}.linux.${NSO_ARCH}.installer.bin /path/to/sshkey.deployment-example/
+      cp /path/to/nso-${NSO_VERSION}.linux.${NSO_ARCH}.installer.bin /path/to/sshkey-deployment-example/
 
 or
 
