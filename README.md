@@ -3,7 +3,7 @@ Nano Service for Provisioning of SSH Public Key NETCONF Client Authentication
 
 This example is a system install production deployment variant of the NSO
 example set local installation
-`examples.ncs/getting-started/netsim-sshkey` example.
+[examples.ncs/getting-started/netsim-sshkey](https://github.com/NSO-developer/nso-examples/tree/main/getting-started/netsim-sshkey) example.
 
 A sender can use a public key to encrypt a message or digital signature that
 only the holder of the corresponding private key can decrypt. Each key pair is
@@ -85,7 +85,7 @@ Running the Example
 First, either add the NSO installer binary into the directory of this `README`
 file or load the NSO container image into the Docker image repository:
 
-      cp /path/to/nso-${NSO_VERSION}.linux.${NSO_ARCH}.installer.bin /path/to/netsim-sshkey/
+      cp /path/to/nso-${NSO_VERSION}.linux.${NSO_ARCH}.installer.bin /path/to/sshkey.deployment-example/
 
 or
 
@@ -202,7 +202,7 @@ client authentication examples.
 Further Reading
 ---------------
 + NSO Development Guide: Develop and Deploy a Nano Service
-+ The `examples.ncs/getting-started/netsim-sshkey` example
++ The [examples.ncs/getting-started/netsim-sshkey](https://github.com/NSO-developer/nso-examples/tree/main/getting-started/netsim-sshkey) example
 + NSO Administrator Guide: Containerized NSO
 + NSO Development Guide: Nano Services
 + NSO Administrator Guide: Deployment Example
