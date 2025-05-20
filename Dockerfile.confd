@@ -1,0 +1,17 @@
+FROM redhat/ubi9:latest
+
+ARG APP_NAME
+ENV APP_NAME=${APP_NAME}
+
+# Minimal installation for running a netsim ConfD instance with a
+# Python application
+RUN dnf --disableplugin=subscription-manager install -y --nodocs python3.12 \
+    make \
+    && ln -sf /usr/bin/python3.12 /usr/bin/python3
+
+# Add the netsim ConfD applcation to the container
+ADD ${APP_NAME}.tar.gz /
+
+WORKDIR /${APP_NAME}
+ENTRYPOINT [ "sh" ]
+CMD [ "-c", "./run.sh" ]

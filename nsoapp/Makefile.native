@@ -1,0 +1,24 @@
+SHELL := /bin/bash # Use bash syntax
+
+all:
+	for f in package-store/*/src; do \
+		$(MAKE) -C $$f all || exit 1; \
+	done
+	cp -r package-store/* ${NCS_RUN_DIR}/packages
+	cp *_init.xml ${NCS_RUN_DIR}/cdb/
+	cp token_auth.sh ${NCS_RUN_DIR}/scripts/
+
+clean:
+	-rm -rf ${NCS_LOG_DIR}/* ${NCS_ROOT_DIR}/packages/* ${NCS_RUN_DIR}/packages/* ${NCS_RUN_DIR}/backups/* ${NCS_RUN_DIR}/cdb/service_notif_init.xml ${NCS_RUN_DIR}/cdb/devices_init.xml ${NCS_RUN_DIR}/cdb/*.cdb ${NCS_RUN_DIR}/state/* ${NCS_RUN_DIR}/streams/* ${NCS_RUN_DIR}/rollbacks/* ${NCS_RUN_DIR}/scripts/token_auth.sh
+	for f in package-store/*/src; do \
+		$(MAKE) -C $$f clean || exit 1; \
+	done
+
+start:
+	ncs --cd ${NCS_RUN_DIR} -c ${NCS_CONFIG_DIR}/ncs.conf
+
+stop:
+	-ncs --stop
+
+cli:
+	ncs_cli -u admin -g ncsadmin -C

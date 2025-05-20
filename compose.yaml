@@ -1,0 +1,136 @@
+volumes:
+  nsoshare:
+  packages:
+
+networks:
+  Example-net:
+    ipam:
+      config:
+        - subnet: ${SUBNET}
+
+services:
+  NODE-NSO:
+    container_name: ${NSO_NAME}
+    hostname: ${NSO_NAME}
+    networks:
+      Example-net:
+        ipv4_address: ${NSO_IP}
+    image: nso-distkey
+    environment:
+        - NSOAPP_NAME=${NSOAPP_NAME}
+        - NSO_NAME=${NSO_NAME}
+        - EX0_IP=${EX0_IP}
+        - EX1_IP=${EX1_IP}
+        - EX2_IP=${EX2_IP}
+        - NSO_HOST_NAME=${NSO_HOST_NAME}
+        - NCS_IPC_PATH=${NCS_IPC_PATH}
+    restart: "unless-stopped"
+    build:
+      context: .
+      args:
+        NSO_IMG_NAME: ${NSO_IMG_NAME}
+      dockerfile: Dockerfile
+    entrypoint: sh
+    command: -c 'runuser -m -u nso -g nso -- /run-nso.sh'
+    healthcheck:
+      test: ncs_cmd -c "wait-start 2"
+      interval: 10s
+      retries: 10
+      start_period: 10s
+      timeout: 10s
+    profiles:
+      - nso
+    volumes:
+      - type: volume
+        source: nsoshare
+        target: /opt/ncs/ncs-${NSO_VERSION}
+      - type: volume
+        source: packages
+        target: /nso/run/packages/
+
+  BUILD-NSO-PKGS:
+    image: ${NSO_BUILDIMG_NAME}
+    container_name: build-nso-pkgs
+    network_mode: none
+    profiles:
+      - build
+    entrypoint: sh
+    command: -c 'cp -r /${NSOAPP_NAME}/package-store/* /nso/run/packages/
+                && make -C /nso/run/packages/distkey/src all
+                && make -C /nso/run/packages/ne/src all'
+    volumes:
+      - type: volume
+        source: packages
+        target: /nso/run/packages/
+      - type: bind
+        source: ${NSOAPP_DIR}
+        target: /${NSOAPP_NAME}
+
+  NODE-EX0:
+    container_name: ${EX0_NAME}
+    hostname: ${EX0_NAME}
+    networks:
+      Example-net:
+        ipv4_address: ${EX0_IP}
+    image: ${EX_IMG_NAME}
+    environment:
+      - NSO_VERSION=${NSO_VERSION}
+      - APP_NAME=${APP_NAME}
+    restart: "unless-stopped"
+    build:
+      context: .
+      args:
+        APP_NAME: ${APP_NAME}
+      dockerfile: ${EX_DOCKERFILE}
+    profiles:
+      - example
+    volumes:
+      - type: volume
+        source: nsoshare
+        target: /opt/ncs/ncs-${NSO_VERSION}
+
+  NODE-EX1:
+    container_name: ${EX1_NAME}
+    hostname: ${EX1_NAME}
+    networks:
+      Example-net:
+        ipv4_address: ${EX1_IP}
+    image: ${EX_IMG_NAME}
+    environment:
+      - NSO_VERSION=${NSO_VERSION}
+      - APP_NAME=${APP_NAME}
+    restart: "unless-stopped"
+    build:
+      context: .
+      args:
+        APP_NAME: ${APP_NAME}
+      dockerfile: ${EX_DOCKERFILE}
+    profiles:
+      - example
+    volumes:
+      - type: volume
+        source: nsoshare
+        target: /opt/ncs/ncs-${NSO_VERSION}
+
+  NODE-EX2:
+    container_name: ${EX2_NAME}
+    hostname: ${EX2_NAME}
+    networks:
+      Example-net:
+        ipv4_address: ${EX2_IP}
+    image: ${EX_IMG_NAME}
+    environment:
+      - NSO_VERSION=${NSO_VERSION}
+      - APP_NAME=${APP_NAME}
+    restart: "unless-stopped"
+    build:
+      context: .
+      args:
+        APP_NAME: ${APP_NAME}
+      dockerfile: ${EX_DOCKERFILE}
+    profiles:
+      - example
+    volumes:
+      - type: volume
+        source: nsoshare
+        target: /opt/ncs/ncs-${NSO_VERSION}
